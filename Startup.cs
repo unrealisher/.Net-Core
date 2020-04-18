@@ -1,3 +1,5 @@
+using ASP_.Net_Core_ToDo.Interfaces;
+using ASP_.Net_Core_ToDo.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -22,6 +24,9 @@ namespace ASP_.Net_Core_ToDo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            // ”казываем интерфейсы и их реализации
+            services.AddTransient<IItems, ItemsService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
