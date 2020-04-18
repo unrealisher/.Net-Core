@@ -22,8 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\src\components\" />
-    <Folder Include="ClientApp\src\store\" />
+    <None Remove="ClientApp\src\components\Button\Button.tsx" />
+    <None Remove="ClientApp\src\store\file.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\components\Button\Button.tsx" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
