@@ -1,0 +1,43 @@
+.Item {
+    position: relative;
+}
+
+.Deleter {
+    position: relative;
+
+    width: 10px;
+    height: 10px;
+
+    margin-left: 3px;
+
+    background: none;
+
+    border: none;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+.Deleter::before,
+.Deleter::after {
+    content: '';
+
+    position: absolute;
+
+    left: 0px;
+    top: 4px;
+    
+    width: 10px;
+    height: 2px;
+
+    background: red;
+}
+
+.Deleter::before {
+    transform: rotate(45deg);
+}
+
+.Deleter::after {
+    transform: rotate(-45deg);
+}

@@ -1,11 +1,74 @@
-import React from 'react';
+import React, { FC, useRef } from 'react';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
 
-const App = () => {
-    return (
-        <div>
-            Hello world!
-        </div>
-    );
+import { addItem } from './store/actions/addItem';
+
+import List from './components/List/List';
+import Item from './components/Item/Item';
+import Input from './components/Input/Input';
+import Button from './components/Button/Button'
+
+import { IState } from './interfaces';
+
+
+
+interface IStateToProps {
+    items?: string[]
 }
 
-export default App;
+interface IDispatchToProps {
+    onAddItem: Function 
+}
+
+interface IAppProps extends IStateToProps, IDispatchToProps {}
+
+const App: FC<IAppProps> = props => {
+    const { items, onAddItem } = props;
+
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const onButtonClick = () => {
+        if (inputRef.current && inputRef.current.value) {
+            onAddItem(inputRef.current.value);
+            inputRef.current.value = '';
+        }
+    }
+
+    return (
+        <div className='App'>
+            {
+                items && 
+                <List>
+                    {
+                        items.map((text, index) => {
+                            return (
+                                <Item index={index} text={text} key={index}></Item>
+                            )
+                        })
+                    }
+                </List>
+            }
+            <div className='Wrapper'>
+                <Input inputRef={inputRef} placeholder='дело'></Input>
+                <Button text='добавить' onClick={onButtonClick}></Button>
+            </div>
+        </div>
+    );
+};
+
+const mapStateToProps = (state: IState): IStateToProps => {
+    return {
+        items: state.items
+    };
+}
+
+const mapDispatchToProps = (dispatch: Dispatch): IDispatchToProps => {
+    return {
+        onAddItem: (text: string) => {
+            dispatch(addItem(text));
+        }
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
