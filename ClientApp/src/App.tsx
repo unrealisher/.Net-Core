@@ -1,5 +1,5 @@
-import React, { FC, useRef } from 'react';
-import { Dispatch } from 'redux';
+import React, { FC, useRef, useEffect } from 'react';
+import { Dispatch, AnyAction } from 'redux';
 import { connect } from 'react-redux';
 
 import { addItem } from './store/actions/addItem';
@@ -10,6 +10,8 @@ import Input from './components/Input/Input';
 import Button from './components/Button/Button'
 
 import { IState } from './interfaces';
+import { fetchData } from './store/actions/fetchData';
+import { ThunkDispatch } from 'redux-thunk';
 
 
 
@@ -18,13 +20,19 @@ interface IStateToProps {
 }
 
 interface IDispatchToProps {
-    onAddItem: Function 
+    onAddItem: Function;
+    onFetchData: Function;
 }
 
 interface IAppProps extends IStateToProps, IDispatchToProps {}
 
 const App: FC<IAppProps> = props => {
-    const { items, onAddItem } = props;
+    const { items, onAddItem, onFetchData } = props;
+
+    useEffect(() => {
+        onFetchData()
+    }, [])
+
 
     const inputRef = useRef<HTMLInputElement>(null)
 
@@ -63,10 +71,13 @@ const mapStateToProps = (state: IState): IStateToProps => {
     };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch): IDispatchToProps => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<IState, null, AnyAction>): IDispatchToProps => {
     return {
         onAddItem: (text: string) => {
             dispatch(addItem(text));
+        },
+        onFetchData: (path?: string) => {
+            dispatch(fetchData(path))
         }
     };
 }
