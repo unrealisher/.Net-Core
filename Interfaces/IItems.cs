@@ -13,5 +13,11 @@ namespace ASP_.Net_Core_ToDo.Interfaces
 
         // Возвращает массив полей text элементов
         List<string> allItemsText { get; }
+
+        // Добавляет новое дело
+        void addItem(string text);
+
+        //Удаляет дело
+        void deleteItem(int index);
     }
 }
