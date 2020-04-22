@@ -9,10 +9,10 @@ namespace ASP_.Net_Core_ToDo.Interfaces
     public interface IItems {
 
         // Возвращает весь список с полем id
-        List<Item> allItems { get; }
+        IEnumerable<Item> allItems { get; }
 
         // Возвращает массив полей text элементов
-        List<string> allItemsText { get; }
+        IEnumerable<string> allItemsText { get; }
 
         // Добавляет новое дело
         void addItem(string text);
