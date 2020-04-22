@@ -1,32 +1,38 @@
+using ASP_.Net_Core_ToDo.DataBase;
 using ASP_.Net_Core_ToDo.Interfaces;
-using ASP_.Net_Core_ToDo.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using ASP_.Net_Core_ToDo.Repository;
 
 namespace ASP_.Net_Core_ToDo
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            DBConfig = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("dbsettings.json").Build();
         }
 
         public IConfiguration Configuration { get; }
 
+        public IConfigurationRoot DBConfig;
+
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppDB>(options => options.UseSqlServer(DBConfig.GetConnectionString("DefaultConnection")));
+
             services.AddControllersWithViews();
 
             // ”казываем интерфейсы и их реализации
-            services.AddTransient<IItems, ItemsService>();
+            services.AddTransient<IItems, ItemsRepository>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -71,6 +77,12 @@ namespace ASP_.Net_Core_ToDo
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                AppDB content = scope.ServiceProvider.GetRequiredService<AppDB>();
+                DBObjects.Initial(content);
+            }
         }
     }
 }
